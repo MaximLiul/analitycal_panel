@@ -25,6 +25,7 @@ def get_the_portion_of_users(path_to_df_file_in_csv, product_column_name, user_c
         dict_portions['The portion of customers who has from {} to {} of {}'.format(comparison_value, comparison_value + step_value, column_for_analysis)] = \
         df_grouped.loc[(df_grouped['Column for comparison'] >= comparison_value) & (df_grouped['Column for comparison'] < comparison_value + step_value)][user_column_name].count() / len(df[user_column_name].value_counts())
 
+
     return dict_portions
 
 
@@ -49,30 +50,33 @@ def get_top_elements(path_to_df_file_in_csv, column_for_analysis, choose_first_n
 
 
 def get_general_characteristics(path_to_df_file_in_csv, product_column_name, user_column_name, quantity_column_name, transactions_column_name, price_column_name):
+
     df = pd.read_csv(path_to_df_file_in_csv)
+    df_grouped_by_customer_and_product = df.groupby([user_column_name, product_column_name], as_index=False)[
+        quantity_column_name].sum()
 
-    dict_general_characteristics = {'number_of_products': len(df[product_column_name].value_counts()),
-                                    'number_of_transactions': len(df[transactions_column_name].value_counts()),
-                                    'number_of_customers': len(df[user_column_name].value_counts())}
+    number_of_products = len(df[product_column_name].value_counts())
+    number_of_transactions = len(df[transactions_column_name].value_counts())
+    number_of_customers = len(df[user_column_name].value_counts())
 
-    df_grouped_by_customer_and_product = df.groupby([user_column_name, product_column_name], as_index=False)[quantity_column_name].sum()
-
-    dict_general_characteristics['average_length_of_quantities_per_customer'] = df[quantity_column_name].sum() / dict_general_characteristics['number_of_customers']
-    dict_general_characteristics['average_length_of_unique_products_per_customer'] = len(df_grouped_by_customer_and_product) / dict_general_characteristics['number_of_customers']
-    dict_general_characteristics['sparsity'] = len(df_grouped_by_customer_and_product) / (dict_general_characteristics['number_of_products'] * dict_general_characteristics['number_of_customers'])
-
-    dict_general_characteristics['average_number_of_quantities_in_a_transaction'] = df[quantity_column_name].sum() / dict_general_characteristics['number_of_transactions']
-    dict_general_characteristics['average_number_of_unique_products_in_a_transaction'] = df[quantity_column_name].count() / dict_general_characteristics['number_of_transactions']
-    dict_general_characteristics['average_number_of_transaction_per_customer'] = dict_general_characteristics['number_of_transactions']/dict_general_characteristics['number_of_customers']
-
-    dict_general_characteristics['average_check'] = df[price_column_name].sum() / dict_general_characteristics['number_of_transactions']
-    dict_general_characteristics['average_expenses_by_user'] = df[price_column_name].sum() / dict_general_characteristics['number_of_customers']
-
+    dict_general_characteristics = {
+                                    'number_of_products': number_of_products,
+                                    'number_of_transactions': number_of_transactions,
+                                    'number_of_customers': number_of_customers,
+                                    'average_length_of_quantities_per_customer': df[quantity_column_name].sum() / number_of_customers,
+                                    'average_length_of_unique_products_per_customer' : len(df_grouped_by_customer_and_product) / number_of_customers,
+                                    'sparsity' : len(df_grouped_by_customer_and_product) / (number_of_products * number_of_customers),
+                                    'average_number_of_quantities_in_a_transaction' :  df[quantity_column_name].sum() / number_of_transactions,
+                                    'average_number_of_unique_products_in_a_transaction' : df[quantity_column_name].count() / number_of_transactions,
+                                    'average_number_of_transaction_per_customer' : number_of_transactions / number_of_customers,
+                                    'average_check' : df[price_column_name].sum() / number_of_transactions,
+                                    'average_expenses_by_user' : df[price_column_name].sum() / number_of_customers
+                                    }
 
     return dict_general_characteristics
 
 
-#print(get_top_elements('kauia_dataset_excluded.csv', 'Product Quantity', choose_first_n = 10, save_or_show_histogram = 'save'))
+print(get_top_elements('kauia_dataset_excluded.csv', 'Product Quantity', choose_first_n = 10, save_or_show_histogram = 'save'))
 #print(get_general_characteristics('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price'))
 # print(get_the_portion_of_users('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price', 'Product Quantity', 0, 30, 3))
 
