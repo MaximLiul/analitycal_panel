@@ -76,9 +76,9 @@ def get_general_characteristics(path_to_df_file_in_csv, product_column_name, use
     return dict_general_characteristics
 
 
-print(get_top_elements('kauia_dataset_excluded.csv', 'Product Quantity', choose_first_n = 10, save_or_show_histogram = 'save'))
+#print(get_top_elements('kauia_dataset_excluded.csv', 'Product Quantity', choose_first_n = 10, save_or_show_histogram = 'save'))
 #print(get_general_characteristics('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price'))
-# print(get_the_portion_of_users('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price', 'Product Quantity', 0, 30, 3))
+#print(get_the_portion_of_users('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price', 'Product Total Price', 0, 5000, 500))
 
 
 # def get_number_of_unique_values_in_column(df, column_name):
