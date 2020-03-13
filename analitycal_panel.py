@@ -31,7 +31,14 @@ def get_the_portion_of_users(path_to_df_file_in_csv, product_column_name, user_c
 
 def get_top_elements(path_to_df_file_in_csv, column_for_analysis, choose_first_n = 10, save_or_show_histogram = None):  #possible values for save_or_show_histogram are 'save' and 'show'
     df = pd.read_csv(path_to_df_file_in_csv)
-    top_elements = df[column_for_analysis].value_counts()
+    top_elements = df[column_for_analysis].value_counts().head(choose_first_n)
+    top_elements_dict = {}
+    for element in top_elements.index:
+        top_elements_dict[element] = top_elements.loc[top_elements.index == element].values[0]
+
+
+
+    #print(top_elements_dict)
 
     if save_or_show_histogram is not None:
         fig = plt.figure(figsize=(12, 12))  # define plot area
@@ -46,7 +53,7 @@ def get_top_elements(path_to_df_file_in_csv, column_for_analysis, choose_first_n
             plt.savefig('histogram_top_{}_elements_{}.png'.format(choose_first_n, column_for_analysis, column_for_analysis), dpi=250)
         else: return print('save_or_show_histogram is not correct')
 
-    return top_elements.head(choose_first_n)
+    return top_elements_dict
 
 
 def get_general_characteristics(path_to_df_file_in_csv, product_column_name, user_column_name, quantity_column_name, transactions_column_name, price_column_name):
@@ -76,7 +83,7 @@ def get_general_characteristics(path_to_df_file_in_csv, product_column_name, use
     return dict_general_characteristics
 
 
-#print(get_top_elements('kauia_dataset_excluded.csv', 'Product Quantity', choose_first_n = 10, save_or_show_histogram = 'save'))
+print(get_top_elements('kauia_dataset_excluded.csv', 'Product Quantity', choose_first_n = 10))
 #print(get_general_characteristics('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price'))
 #print(get_the_portion_of_users('kauia_dataset_excluded.csv', 'Product Name', 'Member ID', 'Product Quantity','Transaction ID', 'Product Total Price', 'Product Total Price', 0, 5000, 500))
 

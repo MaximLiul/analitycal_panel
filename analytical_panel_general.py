@@ -80,7 +80,10 @@ def analytical_panel_general(path_to_df_file_in_csv,
     def get_top_elements(path_to_df_file_in_csv, column_for_analysis, choose_first_n=10,
                          save_or_show_histogram=None):  # possible values for save_or_show_histogram are 'save' and 'show'
         df = pd.read_csv(path_to_df_file_in_csv)
-        top_elements = df[column_for_analysis].value_counts()
+        top_elements = df[column_for_analysis].value_counts().head(choose_first_n)
+        top_elements_dict = {}
+        for element in top_elements.index:
+            top_elements_dict[element] = top_elements.loc[top_elements.index == element].values[0]
 
         if save_or_show_histogram is not None:
             fig = plt.figure(figsize=(12, 12))  # define plot area
@@ -98,7 +101,7 @@ def analytical_panel_general(path_to_df_file_in_csv,
             else:
                 return print('save_or_show_histogram is not correct')
 
-        #return top_elements.head(choose_first_n)
+        return top_elements_dict
 
 
 
@@ -116,10 +119,10 @@ def analytical_panel_general(path_to_df_file_in_csv,
         dict_portions = None
 
     if column_for_analysis_top_elements is not None:
-        get_top_elements(path_to_df_file_in_csv, column_for_analysis_top_elements, choose_first_n, save_or_show_histogram)
+        top_elements_dict = get_top_elements(path_to_df_file_in_csv, column_for_analysis_top_elements, choose_first_n, save_or_show_histogram)
 
 
-    return [dict_general_characteristics, dict_portions]
+    return [dict_general_characteristics, dict_portions, top_elements_dict]
 
 
 
