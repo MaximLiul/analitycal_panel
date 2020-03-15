@@ -30,6 +30,17 @@ def get_general_characteristics(path_to_df_file_in_csv,
     time_duration_in_days = (df[date_column_name].max() - df[date_column_name].min()).days
     #df_grouped_by_customer_and_product.shape[0]
 
+    #working with active part
+    df_only_active_customers = df.loc[df[user_column_name].isin(df_active_customers[user_column_name])].copy()
+    df_only_active_customers_grouped_by_customer_and_product = \
+                                df_only_active_customers.groupby([user_column_name, product_column_name], as_index=False)[quantity_column_name].sum()
+
+    df_only_active_products = df.loc[df[product_column_name].isin(df_active_products[product_column_name])].copy()
+    df_only_active_products_grouped_by_customer_and_product = df_only_active_products.groupby([user_column_name, product_column_name], as_index=False)[quantity_column_name].sum()
+
+    df_active_part = df_only_active_customers.loc[df_only_active_customers[product_column_name].isin(df_active_products[product_column_name])].copy()
+    df_active_part_grouped_by_customer_and_product = df_active_part.groupby([user_column_name, product_column_name], as_index=False)[quantity_column_name].sum()
+
     dict_general_characteristics = {
         'time duration in days': time_duration_in_days,
 
@@ -43,6 +54,8 @@ def get_general_characteristics(path_to_df_file_in_csv,
         'number of customers': number_of_customers,
         'number of customers who made more than {} visits'.format(threashold_active_customers) :  number_of_active_customers,
         'active customers sparsity': number_of_active_customers / number_of_customers,
+        'number of customers per product' : number_of_customers / number_of_products,
+        'number of customers per active product': number_of_customers / number_of_active_products,
 
         'average number of purchases per customer': len(df)/number_of_customers,
         'average number of transactions per customer': number_of_transactions / number_of_customers, #visits
@@ -53,6 +66,13 @@ def get_general_characteristics(path_to_df_file_in_csv,
 
         'number of interactions': len(df_grouped_by_customer_and_product),
         'sparsity': len(df_grouped_by_customer_and_product) / (number_of_products * number_of_customers),
+        'sparsity for active products': len(df_only_active_products_grouped_by_customer_and_product) / (number_of_active_products * number_of_customers),
+        'sparsity for active customers': len(df_only_active_customers_grouped_by_customer_and_product) / (number_of_products * number_of_active_customers),
+        'sparsity for active part': len(df_active_part_grouped_by_customer_and_product) / (
+                    number_of_active_products * number_of_active_customers),
+
+
+
         'average length of unique products per customer': len(df_grouped_by_customer_and_product) / number_of_customers,
 
 
@@ -63,7 +83,7 @@ def get_general_characteristics(path_to_df_file_in_csv,
         'average number of unique products in transaction': df[quantity_column_name].count() / number_of_transactions,
 
         'average check money': df[total_price_column_name].sum() / number_of_transactions, #??????
-        'average check quantity': 0  # ??? = 'average_amount_of_quantities_per_transaction'
+        #'average check quantity': 0  # ??? = 'average_amount_of_quantities_per_transaction'
 
     }
 
