@@ -70,10 +70,11 @@ def get_general_characteristics(path_to_df_file_in_csv,
         'sparsity for active customers': len(df_only_active_customers_grouped_by_customer_and_product) / (number_of_products * number_of_active_customers),
         'sparsity for active part': len(df_active_part_grouped_by_customer_and_product) / (
                     number_of_active_products * number_of_active_customers),
+        'average acquiring of active products': len(df_only_active_products_grouped_by_customer_and_product) / number_of_active_products,
+        'average user activity': len(df_grouped_by_customer_and_product) / number_of_customers,
 
-
-
-        'average length of unique products per customer': len(df_grouped_by_customer_and_product) / number_of_customers,
+        'average acquiring of products': len(df_grouped_by_customer_and_product) / number_of_products,
+        'average length of unique products per customer': len(df_grouped_by_customer_and_product) / number_of_customers, # = 'average user activity'
 
 
         'average amount of product units per customer': df[quantity_column_name].sum() / number_of_customers, # 'average_amount_of_quantities_per_customer'
