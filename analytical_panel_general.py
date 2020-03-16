@@ -72,7 +72,7 @@ def analytical_panel_general(path_to_df_file_in_csv,
                                                                                         column_for_analysis)] = \
                 df_grouped.loc[(df_grouped['Column for comparison'] >= comparison_value) & (
                             df_grouped['Column for comparison'] < comparison_value + step_value)][
-                    user_column_name].count() / len(df[user_column_name].value_counts())
+                    user_column_name].count() / len(df[user_column_name].unique())
 
         return dict_portions
 
