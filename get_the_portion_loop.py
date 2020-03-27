@@ -1,13 +1,14 @@
 import pandas as pd
 
 def get_the_portion_of_users(path_to_df_file_in_csv,
-                             product_column,
-                             user_column,
-                             quantity_column,
-                             transactions_column,
-                             total_price_column,
                              analysis_column_name,
-                             start_value, stop_value, step_value):
+                             start_value, stop_value, step_value,
+                             product_column = 'StockCode',
+                             user_column = 'CustomerID',
+                             quantity_column = 'Quantity',
+                             transactions_column=None,
+                             total_price_column=None
+                             ):
     df = pd.read_csv(path_to_df_file_in_csv)
     if analysis_column_name == quantity_column:
         df_grouped = df.groupby(user_column, as_index=False)[quantity_column].sum()
@@ -35,12 +36,12 @@ def get_the_portion_of_users(path_to_df_file_in_csv,
 
 #The output of the function is a dictionnary where keys are 'The portion of customers who has from start_value to step_value of column_name': portion of customers
 #the diction will show portions until stop_value
-def get_the_portion_of_users_loop(path_to_df_file_in_csv,
-                            user_column,
-                            product_column,
-                            quantity_column,
-                            transaction_column,
-                            total_price_column,
+def get_the_portion_of_users_general(path_to_df,
+                            transaction_column=None,
+                            total_price_column=None,
+                            product_column='StockCode',
+                            user_column='CustomerID',
+                            quantity_column='Quantity',
                             product_list=None , # product_list = [start_value, stop_value, step_value] if product_list = None then proct column will not be considered
                             quantity_list=None,
                             transaction_list=None,
@@ -76,26 +77,28 @@ def get_the_portion_of_users_loop(path_to_df_file_in_csv,
     dict_portions = {}
 
     for list in analysis_list:
-        portion = get_the_portion_of_users(path_to_df_file_in_csv,
+        portion = get_the_portion_of_users(path_to_df,
+                                               list[0],
+                                               list[1], list[2], list[3],
                                                product_list[0],
                                                user_column,
                                                quantity_list[0],
                                                transaction_list[0],
-                                               total_price_list[0],
-                                               list[0],
-                                               list[1], list[2], list[3])
+                                               total_price_list[0]
+                                               )
         dict_portions.update(portion)
     return dict_portions
 
-portions = get_the_portion_of_users_loop('kauia_dataset_excluded.csv',
-                             'Member ID',
+portions = get_the_portion_of_users_general('kauia_dataset_excluded.csv',
+                            #total_price_column=None,
+                            user_column='Member ID',
                             product_column = 'Product Name',
                             quantity_column = 'Product Quantity',
-                            transaction_column = 'Transaction ID',
-                            total_price_column = 'Product Total Price',
-                             product_list= [0, 10, 2] , # product_list = [start_value, stop_value, step_value] if product_list = None then proct column will not be considered
-                             quantity_list=[0, 10, 2],
-                             transaction_list=[0, 10, 2],
+                            transaction_column = None,
+                            total_price_column = None,
+                             product_list= None , # product_list = [start_value, stop_value, step_value] if product_list = None then proct column will not be considered
+                             quantity_list=None,
+                             transaction_list=None,
                              total_price_list=None,
                              )
 print(portions)
