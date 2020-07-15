@@ -41,7 +41,7 @@ def get_general_characteristics(path_to_df,
     else:
         return print('The value of threshold_active_customers_percent_by_visit_or_quantity is not correct')
 
-    df_gr_product = df.groupby(product_column, as_index=False)[quantity_column].sum()
+    df_gr_product = df.groupby(product_column, as_index=False)[quantity_column].sum().sort_values(quantity_column, ascending=False)
     df_active_products = df_gr_product.head(number_of_active_products)
 
     #working with active part
